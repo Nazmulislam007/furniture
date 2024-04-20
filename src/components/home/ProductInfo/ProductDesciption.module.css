@@ -1,0 +1,15 @@
+.listItems {
+  margin-left: -24px;
+  margin-bottom: 0px;
+  list-style-position: outside;
+  max-width: 700px;
+}
+
+.seeMore {
+  color: #1565c0;
+  font-size: 13;
+}
+
+.seeMore:hover {
+  text-decoration: underline;
+}

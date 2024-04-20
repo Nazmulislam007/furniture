@@ -1,0 +1,80 @@
+.no-user-select {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
+}
+
+/* slider */
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: black !important;
+}
+
+/* large slider */
+
+.slider-item {
+  height: 50vh;
+}
+
+.mini-slider-item {
+  height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.price {
+  position: absolute;
+  font-weight: normal;
+  padding: 2px 8px;
+  bottom: 6px;
+  right: 0;
+  background: #0000006e;
+  color: white;
+}
+
+@media screen and (min-width: 900px) {
+  .slider-item {
+    height: 70vh;
+  }
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  font-weight: medium;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+button {
+  border: none;
+  outline: none;
+  color: inherit;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+body {
+  background: hsl(0, 0%, 95%);
+}
+
+/* dropdown */
+.dropdown:hover > .dropdown-menu {
+  display: block;
+}
