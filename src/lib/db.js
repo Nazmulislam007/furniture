@@ -4,14 +4,17 @@ export async function query({ query, values = [] }) {
   // const dbconnection = await mysql.createConnection({
   //   host: "localhost",
   //   database: "renocommerce",
-  //   user: "root",
+  //   user: "nazmul",
+  //   password: "112233",
   // });
+
   const dbconnection = await mysql.createConnection({
     host: "localhost",
     database: "renocommerce",
-    user: "renocom",
+    user: "renocomdb",
     password: "aprjun365",
   });
+
   try {
     const [results] = await dbconnection.execute(query, values);
     dbconnection.end();
