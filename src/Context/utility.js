@@ -220,14 +220,8 @@ export const getCustomerByContractor = async (contractorId) => {
   return res.customer;
 };
 export const getCustomerbyId = async (custId) => {
-  const apiUrlEndpoint = `${apiUrl}/api/getCustomerById`;
-  const response = await fetch(apiUrlEndpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ customerId: custId }),
-  });
+  const apiUrlEndpoint = `${apiUrl}/api/getCustomerById?customerId=${custId}`;
+  const response = await fetch(apiUrlEndpoint);
   const res = await response.json();
   return res.customer;
 };

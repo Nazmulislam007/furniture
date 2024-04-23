@@ -14,9 +14,10 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async ({ params }) => {
   const pathname = params.page;
   const products = await getProductByCategory();
-  const content = products.length
-    ? products.filter((product) => product.url === pathname)
-    : [];
+  const content =
+    products.length > 0
+      ? products.filter((product) => product.url === pathname)
+      : [];
   return {
     props: {
       content,

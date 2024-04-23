@@ -24,7 +24,7 @@ import { useEffect, useState } from "react";
 // const CUSTOMER_ID = 23;
 
 export default function AllProduct() {
-  const { dispatch, addtoCart } = useSeletedProduct();
+  const { setIsUpdatedMyPrice } = useSeletedProduct();
   const [show, setShow] = useState(false);
   const [selected, setSelected] = useState("vanities");
   // const catagory = Object.keys(productApi);
@@ -50,6 +50,7 @@ export default function AllProduct() {
       setMyPrice(await getMyPrice({ CUSTOMER_ID, selected }));
     }
   };
+
   const getAllProducts = async () => {
     const category = await getCategory();
     const newArr = [];
@@ -81,7 +82,9 @@ export default function AllProduct() {
       type: selected,
       ...myPrice,
     });
+
     if (resp.status === 200) {
+      setIsUpdatedMyPrice((prev) => prev + 1);
       alert("my price updated");
     }
     /* dispatch({
