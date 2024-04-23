@@ -9,7 +9,7 @@ export async function query({ query, values = [] }) {
   // });
 
   const dbconnection = await mysql.createConnection({
-    host: "localhost",
+    host: "167.99.182.9",
     database: "renocommerce",
     user: "renocomdb",
     password: "aprjun365",
@@ -20,7 +20,6 @@ export async function query({ query, values = [] }) {
     dbconnection.end();
     return results;
   } catch (error) {
-    throw Error(error.message);
-    return { error };
+    console.log(error);
   }
 }
