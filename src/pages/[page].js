@@ -37,8 +37,7 @@ export default function index() {
   async function getProducts() {
     try {
       const data = await getProductByCategory();
-      const content = data.filter((product) => product.url === pathname);
-      setProducts(content);
+      setProducts(data);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -49,7 +48,7 @@ export default function index() {
   useEffect(() => {
     setLoading(true);
     getProducts();
-  }, []);
+  }, [pathname]);
 
   if (loading) return <div>loading...</div>;
 
@@ -57,6 +56,7 @@ export default function index() {
     return <div>Something went wrong! please try again.</div>;
 
   if (products.length > 0 && !loading) {
-    return <PageContent products={products} pathname={pathname} />;
+    const content = products.filter((product) => product.url === pathname);
+    return <PageContent products={content} pathname={pathname} />;
   }
 }
