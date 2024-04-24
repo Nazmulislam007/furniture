@@ -11,6 +11,17 @@ import { Button, Stack, TableCell, TableRow, Typography } from "@mui/material";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+const selectItems = [
+  { page: "Vanities", url: "vanities" },
+  { page: "Flooring", url: "flooring" },
+  { page: "Tiles", url: "tiles" },
+  { page: "Countertops", url: "countertops" },
+  { page: "Kitchen Faucets", url: "kitchen Faucets" },
+  { page: "Shower Kit", url: "showerkit" },
+  { page: "Cabinets", url: "cabinets" },
+  { page: "Bathtub", url: "bathtub" },
+];
+
 export default function DashboardTableRow({ cus, dispatch }) {
   const toast = useToast();
   const copyIdRef = useRef(null);
@@ -25,6 +36,10 @@ export default function DashboardTableRow({ cus, dispatch }) {
   });
 
   const [uniqueUrl, setUniqueUrl] = useState("");
+  const [selectItem, setSelectItem] = useState({
+    url: "vanities",
+    page: "Vanities",
+  });
 
   // get unique url
   useEffect(() => {
@@ -38,6 +53,12 @@ export default function DashboardTableRow({ cus, dispatch }) {
           setUniqueUrl(
             `${window.location.origin}/${data[0].url}/${data[0].customer_id}`
           );
+          setSelectItem({
+            url: data[0].landingpage_id,
+            page: selectItems.find(
+              (item) => item.url === data[0].landingpage_id
+            ).page,
+          });
         } else {
           setUniqueUrl(`sub.domain.com/${cus?.id}`);
         }
@@ -85,7 +106,7 @@ export default function DashboardTableRow({ cus, dispatch }) {
           id: cus?.id,
           [e.target.name]: e.target.checked,
           ...(e.target.name === "goto" && {
-            landingpage_id: cus?.page.toLowerCase(),
+            landingpage_id: selectItem.url,
           }),
         }),
       });
@@ -118,10 +139,47 @@ export default function DashboardTableRow({ cus, dispatch }) {
     }
   };
 
+  const handleSelect = async (e) => {
+    if (!currentUser?.id) return alert("Please login to add toggle status.");
+    const page = selectItems.find((item) => item.url === e.target.value).page;
+    setSelectItem({ page, url: e.target.value });
+
+    // toggle status in database.
+    const url = `${apiUrl}/api/toggleStatus`;
+    try {
+      await fetch(url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: cus?.id,
+          goto: state.goto,
+          landingpage_id: e.target.value,
+        }),
+      });
+    } catch (error) {
+      console.log("Failed to toggle status: ", error);
+    }
+  };
+
   // handle copyClick
   const handleCopyClick = async () => {
-    await navigator.clipboard.writeText(copyIdRef.current.textContent);
-    toast("URL copied", "#2ecc71");
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        const textContent = copyIdRef.current.textContent;
+        if (textContent) {
+          await navigator.clipboard.writeText(textContent);
+          toast("URL copied", "#2ecc71");
+        } else {
+          console.error("No text content to copy.");
+        }
+      } else {
+        console.error("Clipboard API not supported.");
+      }
+    } catch (error) {
+      console.error("Error copying text to clipboard:", error);
+    }
   };
 
   return (
@@ -192,10 +250,17 @@ export default function DashboardTableRow({ cus, dispatch }) {
             <CustomSelect
               disableUnderline
               variant="standard"
-              value={cus?.page}
+              value={selectItem.url}
+              label={selectItem.page}
               sx={{ maxWidth: 170, flex: 1 }}
+              onChange={handleSelect}
+              name={selectItem.page}
             >
-              <CustomMenuItem value={cus?.page}>{cus?.page}</CustomMenuItem>
+              {selectItems.map((item) => (
+                <CustomMenuItem key={item.url} value={item.url}>
+                  {item.page}
+                </CustomMenuItem>
+              ))}
             </CustomSelect>
             <IOSSwitch
               name="goto"

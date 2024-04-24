@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   const { customer_id } = req.query;
   try {
     const querySql = `
-    SELECT cc.url, ccc.customer_id 
+    SELECT cc.url, ccc.customer_id, ccc.landingpage_id
     FROM construction_company cc 
     INNER JOIN construction_company_customer ccc 
     ON cc.id = ccc.company_id
