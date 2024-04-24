@@ -48,17 +48,22 @@ export default function DashboardTableRow({ cus, dispatch }) {
         const url = `${apiUrl}/api/getUniqueUrl?customer_id=${cus?.id}`;
         const res = await fetch(url);
         const data = await res.json();
-
+        console.log(data);
         if (data.length > 0) {
           setUniqueUrl(
             `${window.location.origin}/${data[0].url}/${data[0].customer_id}`
           );
-          setSelectItem({
-            url: data[0].landingpage_id,
-            page: selectItems.find(
-              (item) => item.url === data[0].landingpage_id
-            ).page,
-          });
+
+          const page = selectItems.find(
+            (item) => item.url === data[0].landingpage_id
+          );
+
+          if (page) {
+            setSelectItem({
+              url: data[0].landingpage_id,
+              page: page.page,
+            });
+          }
         } else {
           setUniqueUrl(`sub.domain.com/${cus?.id}`);
         }
@@ -175,7 +180,13 @@ export default function DashboardTableRow({ cus, dispatch }) {
           console.error("No text content to copy.");
         }
       } else {
-        console.error("Clipboard API not supported.");
+        const textArea = document.createElement("textarea");
+        textArea.value = copyIdRef.current.textContent;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+        toast("URL copied", "#2ecc71");
       }
     } catch (error) {
       console.error("Error copying text to clipboard:", error);
