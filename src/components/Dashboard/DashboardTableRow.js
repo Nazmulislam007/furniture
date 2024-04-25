@@ -219,7 +219,10 @@ export default function DashboardTableRow({ cus, dispatch }) {
       <TableCell>
         <Stack>
           <Stack direction="row" spacing={1} alignItems="center">
-            <div ref={copyIdRef}>
+            <div
+              ref={copyIdRef}
+              style={{ maxWidth: "170px", marginRight: "10px" }}
+            >
               {uniqueUrl}
               <CopyAllIcon
                 sx={{ cursor: "pointer", mb: "-5px", ml: "5px" }}
@@ -262,7 +265,7 @@ export default function DashboardTableRow({ cus, dispatch }) {
           <Typography component="span" fontSize={12}>
             URL should go to
           </Typography>
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={2}>
             <CustomSelect
               disableUnderline
               variant="standard"
