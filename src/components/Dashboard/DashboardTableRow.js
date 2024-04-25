@@ -219,8 +219,13 @@ export default function DashboardTableRow({ cus, dispatch }) {
       <TableCell>
         <Stack>
           <Stack direction="row" spacing={1} alignItems="center">
-            <div ref={copyIdRef}>{uniqueUrl}</div>
-            <CopyAllIcon sx={{ cursor: "pointer" }} onClick={handleCopyClick} />
+            <div ref={copyIdRef}>
+              {uniqueUrl}
+              <CopyAllIcon
+                sx={{ cursor: "pointer", mb: "-5px", ml: "5px" }}
+                onClick={handleCopyClick}
+              />
+            </div>
             <Link href="/dashboard/customer-cart">
               <Button
                 variant="contained"
