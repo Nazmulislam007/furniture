@@ -15,15 +15,15 @@ export default function CustomerItem({ customer }) {
       minWidth="max-content"
       onClick={() => router.push(`/dashboard/customer-cart/${customer.id}`)}
     >
-      {/* <Typography component="div" fontSize={20}>
-        Customer {customer.id}
-      </Typography> */}
-      <Typography component="p" color="gary">
+      <Typography component="p" color="gary" fontSize="20px">
         {customer.fname ? customer.fname : customer.first_name}{" "}
         {customer.lname ? customer.lname : customer.last_name}
       </Typography>
       <Typography component="p" color="gary">
         {customer.page}
+      </Typography>
+      <Typography component="p" color="gary">
+        {customer.phone}
       </Typography>
     </Stack>
   );
