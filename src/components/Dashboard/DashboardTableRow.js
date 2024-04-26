@@ -7,7 +7,14 @@ import BorderColorIcon from "@mui/icons-material/BorderColor";
 import CopyAllIcon from "@mui/icons-material/CopyAll";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { Button, Stack, TableCell, TableRow, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Stack,
+  TableCell,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
@@ -219,16 +226,16 @@ export default function DashboardTableRow({ cus, dispatch }) {
       <TableCell>
         <Stack>
           <Stack direction="row" spacing={1} alignItems="center">
-            <div
+            <Box
               ref={copyIdRef}
-              style={{ maxWidth: "170px", marginRight: "10px" }}
+              sx={{ maxWidth: "170px", mr: "10px", display: "table" }}
             >
               {uniqueUrl}
               <CopyAllIcon
                 sx={{ cursor: "pointer", mb: "-5px", ml: "5px" }}
                 onClick={handleCopyClick}
               />
-            </div>
+            </Box>
             <Link href="/dashboard/customer-cart">
               <Button
                 variant="contained"
