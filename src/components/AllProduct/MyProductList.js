@@ -153,7 +153,7 @@ export default function MyProductList({
                       ${product.price}
                     </CustomTableCell>
                     <CustomTableCell sx={{ fontWeight: 500 }}>
-                      ${product.myprice.toFixed(2)}
+                      ${(product.price + product.myprice).toFixed(2)}
                     </CustomTableCell>
                     <CustomTableCell>
                       <Button
