@@ -1,7 +1,7 @@
-import { decreQtyFn, increQtyFn } from '@/Context/ProductInfoProvider/actions';
-import { Box, Button, Stack, Typography } from '@mui/material';
-import moment from 'moment';
-import Image from 'next/image';
+import { decreQtyFn, increQtyFn } from "@/Context/ProductInfoProvider/actions";
+import { Box, Button, Stack, Typography } from "@mui/material";
+import moment from "moment";
+import Image from "next/image";
 
 const CUSTOMER_ID = 23;
 
@@ -19,23 +19,23 @@ export default function SelectedProduct({
   const handleIncre = () => {
     if (handles && isExistedHandle) {
       dispatch({
-        type: 'INCREMENT_HANDLE_QTY_TO_CART',
+        type: "INCREMENT_HANDLE_QTY_TO_CART",
         payload: {
           customerId: CUSTOMER_ID,
-          type: 'cabinets',
+          type: "cabinets",
           id
         }
       });
     }
 
-    if (handles) return dispatch({ type: 'INCREMENT_HANDLE_QTY', payload: id });
+    if (handles) return dispatch({ type: "INCREMENT_HANDLE_QTY", payload: id });
 
     if (existProduct) {
       dispatch({
-        type: 'INCREMENT_CABINETS_QTY',
+        type: "INCREMENT_CABINETS_QTY",
         payload: {
           customerId: CUSTOMER_ID,
-          type: 'cabinets',
+          type: "cabinets",
           id
         }
       });
@@ -44,16 +44,16 @@ export default function SelectedProduct({
     // add product with clicking increment btn when other product is already existed
     if (isExistProducts?.length > 0 && !existProduct) {
       dispatch({
-        type: 'ADD_CABINETS_COLLECTION_TO_CART',
+        type: "ADD_CABINETS_COLLECTION_TO_CART",
         payload: [
           {
             customerId: CUSTOMER_ID,
-            type: 'cabinets',
+            type: "cabinets",
             ...item,
             myPrice: price,
             catagory: name,
             quantity: 1,
-            addedAt: moment().format('DD MMM YYYY')
+            addedAt: moment().format("DD MMM YYYY")
           }
         ]
       });
@@ -65,23 +65,23 @@ export default function SelectedProduct({
   const handleDecre = () => {
     if (handles && isExistedHandle) {
       dispatch({
-        type: 'DECREMENT_HANDLE_QTY_TO_CART',
+        type: "DECREMENT_HANDLE_QTY_TO_CART",
         payload: {
           customerId: CUSTOMER_ID,
-          type: 'cabinets',
+          type: "cabinets",
           id
         }
       });
     }
 
-    if (handles) return dispatch({ type: 'DECREMENT_HANDLE_QTY', payload: id });
+    if (handles) return dispatch({ type: "DECREMENT_HANDLE_QTY", payload: id });
 
     if (existProduct) {
       dispatch({
-        type: 'DECREMENT_CABINETS_QTY',
+        type: "DECREMENT_CABINETS_QTY",
         payload: {
           customerId: CUSTOMER_ID,
-          type: 'cabinets',
+          type: "cabinets",
           id
         }
       });
@@ -102,7 +102,7 @@ export default function SelectedProduct({
       padding="15px"
       borderBottom="2px solid"
     >
-      <Box sx={{ width: 100, height: 100, position: 'relative' }}>
+      <Box sx={{ width: 100, height: 100, position: "relative" }}>
         {img && (
           <Image
             src={img}
@@ -121,7 +121,7 @@ export default function SelectedProduct({
           {name}
         </Typography>
         <Typography component="p" fontWeight="500">
-          {type === 'handle' ? '2 pieces per pack' : '30W x 30H x 12.5D'}
+          {type === "handle" ? "2 pieces per pack" : "30W x 30H x 12.5D"}
         </Typography>
         <Typography component="p" fontWeight="500" color="primary" fontSize="18px">
           ${price}
@@ -129,12 +129,12 @@ export default function SelectedProduct({
       </Box>
       <Stack
         direction="row"
-        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
       >
         <Button
           variant="contained"
           color="primary"
-          sx={{ minWidth: 40, padding: '8px' }}
+          sx={{ minWidth: 40, padding: "8px" }}
           onClick={handleDecre}
         >
           -
@@ -143,7 +143,7 @@ export default function SelectedProduct({
         <Button
           variant="contained"
           color="primary"
-          sx={{ minWidth: 40, padding: '8px' }}
+          sx={{ minWidth: 40, padding: "8px" }}
           onClick={handleIncre}
         >
           +

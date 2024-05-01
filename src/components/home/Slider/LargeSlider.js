@@ -1,16 +1,14 @@
-import { useSeletedProduct } from '@/Context/ProductInfoProvider/ProductInfoProvider';
-import Image from 'next/image';
-import { Navigation } from 'swiper';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { useSeletedProduct } from "@/Context/ProductInfoProvider/ProductInfoProvider";
+import Image from "next/image";
+import { Navigation } from "swiper";
+import "swiper/css";
+import "swiper/css/navigation";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 export default function LargeSlider() {
   const { selectedProduct } = useSeletedProduct();
-  const relatedImg =
-    typeof selectedProduct?.relatedImg === 'string'
-      ? selectedProduct?.relatedImg && JSON.parse(selectedProduct.relatedImg)
-      : selectedProduct?.relatedImg;
+
+  const relatedImg = selectedProduct?.relatedImg && JSON.parse(selectedProduct.relatedImg);
 
   return (
     <Swiper
@@ -31,7 +29,7 @@ export default function LargeSlider() {
                            33vw"
               priority
               as="image"
-              style={{ objectFit: 'cover' }}
+              style={{ objectFit: "cover" }}
             />
           </SwiperSlide>
         ))}

@@ -1,9 +1,8 @@
-import productApi from '@/Context/ProductInfoProvider/Api/productApi';
-import { getProductByCategory } from '@/Context/utility';
-import CabinetContent from '@/layouts/CabinetContent';
-import PageContent from '@/layouts/PageContent';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { getCabinets, getProductByCategory } from "@/Context/utility";
+import CabinetContent from "@/layouts/CabinetContent";
+import PageContent from "@/layouts/PageContent";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const router = useRouter();
@@ -13,8 +12,13 @@ export default function Home() {
 
   async function getProducts() {
     try {
-      const data = await getProductByCategory();
-      setProducts(data);
+      if (pathname === "cabinets") {
+        const data = await getCabinets();
+        setProducts(data);
+      } else {
+        const data = await getProductByCategory();
+        setProducts(data);
+      }
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -29,13 +33,13 @@ export default function Home() {
 
   if (loading) return <div>loading...</div>;
 
-  if (!loading && products.length === 0) return <div>Something went wrong! please try again.</div>;
+  if (!loading && products?.length === 0) return <div>Something went wrong! please try again.</div>;
 
-  if (products.length > 0 && !loading) {
+  if (products?.length > 0 && !loading) {
     const content = products.filter((product) => product.url === pathname);
 
-    return pathname === 'cabinets' ? (
-      <CabinetContent products={productApi.cabinets} pathname={pathname} />
+    return pathname === "cabinets" ? (
+      <CabinetContent products={products} pathname={pathname} />
     ) : (
       <PageContent products={content} pathname={pathname} />
     );
