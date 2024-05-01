@@ -1,7 +1,7 @@
 export const generateEmailContent = (data) => {
-	const resetPasswordLink = `http://localhost:3000/login/reset_password?token=${data.email}`;
+  const resetPasswordLink = `http://localhost:3000/login/reset_password?token=${data.email}`;
 
-	const htmlData = `
+  const htmlData = `
   <!DOCTYPE html>
   <html lang="en">
   
@@ -29,7 +29,7 @@ export const generateEmailContent = (data) => {
   </html>
   `;
 
-	return {
-		html: htmlData,
-	};
+  return {
+    html: htmlData
+  };
 };
