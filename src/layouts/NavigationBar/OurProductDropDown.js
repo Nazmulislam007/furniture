@@ -17,38 +17,44 @@ import { useEffect, useState } from 'react';
 ]; */
 
 export default function OurProductDropDown() {
-   const [productCatagory, setProductCatagory] = useState([]);
-   useEffect(() => {
-      async function getPageData() {
-         const apiUrlEndpoint = `${apiUrl}/api/getcategories`;
-         const response = await fetch(apiUrlEndpoint);
-         const res = await response.json();
-         setProductCatagory(res.category);
-      }
-      getPageData();
-   }, []);
-   return (
-      <Stack
-         sx={{
-            color: 'black',
-            position: 'relative',
-            display: { xs: 'none', sm: 'block' },
-         }}
-         className="dropdown"
+  const [productCatagory, setProductCatagory] = useState([]);
+  useEffect(() => {
+    async function getPageData() {
+      const apiUrlEndpoint = `${apiUrl}/api/getcategories`;
+      const response = await fetch(apiUrlEndpoint);
+      const res = await response.json();
+      setProductCatagory(res.category);
+    }
+    getPageData();
+  }, []);
+  return (
+    <Stack
+      sx={{
+        color: 'black',
+        position: 'relative',
+        display: { xs: 'none', sm: 'block' }
+      }}
+      className="dropdown"
+    >
+      <LinkButton variant="text" endIcon={<ArrowDropDownIcon />} sx={{ color: 'black' }}>
+        Our product
+      </LinkButton>
+      <MenuList
+        sx={{
+          position: 'absolute',
+          bgcolor: 'white',
+          zIndex: 10,
+          top: '100%',
+          display: 'none'
+        }}
+        className="dropdown-menu"
       >
-         <LinkButton variant="text" endIcon={<ArrowDropDownIcon />} sx={{ color: 'black' }}>
-            Our product
-         </LinkButton>
-         <MenuList
-            sx={{ position: 'absolute', bgcolor: 'white', zIndex: 10, top: '100%', display: 'none' }}
-            className="dropdown-menu"
-         >
-            {productCatagory.map((page, i) => (
-               <Link key={i} href={page.url}>
-                  <MenuItem>{page.page_name}</MenuItem>
-               </Link>
-            ))}
-         </MenuList>
-      </Stack>
-   );
+        {productCatagory.map((page, i) => (
+          <Link key={i} href={`/${page.url}`}>
+            <MenuItem>{page.page_name}</MenuItem>
+          </Link>
+        ))}
+      </MenuList>
+    </Stack>
+  );
 }

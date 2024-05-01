@@ -8,16 +8,12 @@ const SORTED_BY = 'product/sorted-by';
 const FILTER_BY_PRICE = 'product/filter-by-product';
 const ADD_TO_CART = 'product/add-to-cart';
 const REMOVE_TO_CART = 'product/remove-to-cart';
+const ADD_CABINETS_COLLECTION = 'product/add-vanities-collection';
+const INCREMENT_QANTITY =   'product/increment-quantity';
+const DECREMENT_QANTITY = 'product/decrement-quantity';
+const ADD_DOOR_HANDLES = 'product/add-door-handles';
+const REMOVE_DOOR_HANDLES = 'product/remove-door-handles';
+const ACTIVE_PRODUCT_STATUS = 'product/change-product-status';
+const PASSIVE_PRODUCT_STATUS = 'product/passive-product-status';
 
-export {
-    SELECT_PRODUCT,
-    FETCH_DATA,
-    ADD_NEW_PRODUCTS,
-    REMOVE_NEW_PRODUCTS,
-    FILTER_BY_LOCATION_VENDOR,
-    SORTED_BY,
-    FILTER_BY_PRICE,
-    ADD_TO_CART,
-    REMOVE_TO_CART
-};
-//
+export { ACTIVE_PRODUCT_STATUS, ADD_CABINETS_COLLECTION, ADD_DOOR_HANDLES, ADD_NEW_PRODUCTS, ADD_TO_CART, DECREMENT_QANTITY, FETCH_DATA, FILTER_BY_LOCATION_VENDOR, FILTER_BY_PRICE, INCREMENT_QANTITY, PASSIVE_PRODUCT_STATUS, REMOVE_DOOR_HANDLES, REMOVE_NEW_PRODUCTS, REMOVE_TO_CART, SELECT_PRODUCT, SORTED_BY };

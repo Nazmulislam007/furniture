@@ -1,10 +1,10 @@
 export default function Home() {
-   return <div />;
+	return <div />;
 }
 
 export const getServerSideProps = async () => ({
-   redirect: {
-      destination: '/vanities',
-      permanent: true,
-   },
+	redirect: {
+		destination: "/vanities",
+		permanent: true,
+	},
 });
