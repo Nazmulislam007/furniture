@@ -229,6 +229,8 @@ export const getCustomerbyId = async (custId) => {
   const res = await response.json();
   return res.customer;
 };
+
+// cabinets
 export const getCabinets = async () => {
   const apiUrlEndpoint = `${apiUrl}/api/cabinets/getCabinets`;
   const response = await fetch(apiUrlEndpoint);
@@ -247,4 +249,23 @@ export async function getCorners(corner_id) {
   const response = await fetch(apiUrlEndpoint);
   const res = await response.json();
   return res.corner;
+}
+export async function getHandlesfromDB() {
+  const apiUrlEndpoint = `${apiUrl}/api/cabinets/getHandles`;
+  const response = await fetch(apiUrlEndpoint);
+  const res = await response.json();
+  return res.handles;
+}
+
+export async function cabinetsCart(products) {
+  const apiUrlEndpoint = `${apiUrl}/api/cabinets/addCabinetsToCart`;
+  const response = await fetch(apiUrlEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(products)
+  });
+  const res = await response.json();
+  return res;
 }

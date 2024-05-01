@@ -1,33 +1,45 @@
-import { doorhandles } from '@/Context/ProductInfoProvider/Api/productApi';
-import { useSeletedProduct } from '@/Context/ProductInfoProvider/ProductInfoProvider';
-import { addDoorHandlesFn, removeDoorHandlesFn } from '@/Context/ProductInfoProvider/actions';
-import { Typography, useMediaQuery } from '@mui/material';
-import Image from 'next/image';
-import { useEffect } from 'react';
-import { Navigation } from 'swiper';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { useSeletedProduct } from "@/Context/ProductInfoProvider/ProductInfoProvider";
+import { addDoorHandlesFn, removeDoorHandlesFn } from "@/Context/ProductInfoProvider/actions";
+import { getHandlesfromDB } from "@/Context/utility";
+import { Typography, useMediaQuery } from "@mui/material";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { Navigation } from "swiper";
+import "swiper/css";
+import "swiper/css/navigation";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 const CUSTOMER_ID = 23;
 
 export default function DoorsSlider({ isExistedHandle }) {
-  const products = doorhandles;
-  const matches = useMediaQuery('(max-width:760px)');
+  const [products, setProducts] = useState([]);
+  const matches = useMediaQuery("(max-width:760px)");
   const { dispatch, handles, addtoCart } = useSeletedProduct() || {};
+
+  async function getHandles() {
+    try {
+      const data = await getHandlesfromDB();
+      setProducts(data);
+    } catch (error) {
+      console.log(`Get handles error: ${error}`);
+    }
+  }
+
+  useEffect(() => {
+    getHandles();
+  }, []);
 
   const isAdded = (id) => {
     const isExist = handles?.find((item) => item.id === id);
-    if (isExist) return 'Added';
-    return '';
+    if (isExist) return "Added";
+    return "";
   };
 
   useEffect(() => {
     dispatch({
-      type: 'UPDATE_HANDLE_STATE',
+      type: "UPDATE_HANDLE_STATE",
       payload: isExistedHandle
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
   // total price and total qantity;
@@ -36,22 +48,22 @@ export default function DoorsSlider({ isExistedHandle }) {
   // my set price
   const mySetPrice = addtoCart[CUSTOMER_ID].myPrice.cabinets;
   const myPrice =
-    mySetPrice.sign === '%' ? ((totalPrice / 100) * mySetPrice.price).toFixed(2) : mySetPrice.price;
+    mySetPrice.sign === "%" ? ((totalPrice / 100) * mySetPrice.price).toFixed(2) : mySetPrice.price;
 
   const handleAddProduct = (product) => {
     const isExisted = isExistedHandle?.find((item) => item.id === product.id);
 
-    if (isAdded(product.id) !== '') {
+    if (isAdded(product.id) !== "") {
       dispatch(removeDoorHandlesFn(product.id));
 
       if (isExisted) {
         dispatch({
-          type: 'REMOVE_SINGLE_HANDLE_TO_CART',
+          type: "REMOVE_SINGLE_HANDLE_TO_CART",
           payload: {
             customerId: CUSTOMER_ID,
             id: isExisted.id,
-            subType: 'handle',
-            type: 'cabinets'
+            subType: "handle",
+            type: "cabinets"
           }
         });
       }
@@ -61,21 +73,21 @@ export default function DoorsSlider({ isExistedHandle }) {
     // add product when other product is already existed
     if (isExistedHandle?.length > 0 && !isExisted) {
       dispatch({
-        type: 'ADD_HANDLE_TO_CART',
+        type: "ADD_HANDLE_TO_CART",
         payload: {
           data: [
             {
               ...product,
               quantity: 1,
               myPrice: +myPrice + +product.price,
-              type: 'cabinets',
-              subType: 'handle',
+              type: "cabinets",
+              subType: "handle",
               customerId: CUSTOMER_ID
             }
           ],
           customerId: CUSTOMER_ID,
-          type: 'cabinets',
-          subType: 'handle'
+          type: "cabinets",
+          subType: "handle"
         }
       });
     }
@@ -85,8 +97,8 @@ export default function DoorsSlider({ isExistedHandle }) {
         ...product,
         quantity: 1,
         myPrice: +myPrice + +product.price,
-        type: 'cabinets',
-        subType: 'handle',
+        type: "cabinets",
+        subType: "handle",
         customerId: CUSTOMER_ID
       })
     );
@@ -122,10 +134,10 @@ export default function DoorsSlider({ isExistedHandle }) {
         <SwiperSlide key={i} className="mini-slider-item" onClick={() => handleAddProduct(product)}>
           <div
             style={{
-              position: 'relative',
-              height: `${matches ? '80px' : '110px'}`,
-              width: `${matches ? '80px' : '140px'}`,
-              margin: '0 auto'
+              position: "relative",
+              height: `${matches ? "80px" : "110px"}`,
+              width: `${matches ? "80px" : "140px"}`,
+              margin: "0 auto"
             }}
           >
             <Image

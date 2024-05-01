@@ -1,10 +1,10 @@
 /* eslint-disable default-case */
-import { useSeletedProduct } from '@/Context/ProductInfoProvider/ProductInfoProvider';
-import { Box, Stack, Typography } from '@mui/material';
-import Link from 'next/link';
-import AddToCartButton from '../AddToCartButton';
-import DoorsSlider from './DoorsSlider';
-import SelectedProduct from './SelectedProduct';
+import { useSeletedProduct } from "@/Context/ProductInfoProvider/ProductInfoProvider";
+import { Box, Stack, Typography } from "@mui/material";
+import Link from "next/link";
+import AddToCartButton from "../AddToCartButton";
+import DoorsSlider from "./DoorsSlider";
+import SelectedProduct from "./SelectedProduct";
 
 const CUSTOMER_ID = 23;
 
@@ -13,12 +13,12 @@ export default function DoorHandles() {
 
   // if any product of cabinets selected then show door handles
   const isAddProduct = addtoCart[CUSTOMER_ID].product.cabinets?.find(
-    (cart) => cart.type === 'cabinets'
+    (cart) => cart.type === "cabinets"
   );
 
   // is the product of handles are exist or not
   const isExistedHandle = addtoCart[CUSTOMER_ID].product.cabinets?.filter(
-    (cart) => cart.subType === 'handle'
+    (cart) => cart.subType === "handle"
   );
 
   // total price and total qantity;
@@ -27,17 +27,17 @@ export default function DoorHandles() {
   const handleAddToCart = () => {
     if (isExistedHandle?.length > 0)
       return dispatch({
-        type: 'REMOVE_HANDLE_TO_CART',
+        type: "REMOVE_HANDLE_TO_CART",
         payload: {
           customerId: CUSTOMER_ID,
-          subType: 'handle',
-          type: 'cabinets'
+          subType: "handle",
+          type: "cabinets"
         }
       });
 
     dispatch({
-      type: 'ADD_HANDLE_TO_CART',
-      payload: { data: handles, customerId: CUSTOMER_ID, type: 'cabinets' }
+      type: "ADD_HANDLE_TO_CART",
+      payload: { data: handles, customerId: CUSTOMER_ID, type: "cabinets" }
     });
   };
 
@@ -49,10 +49,10 @@ export default function DoorHandles() {
         </Typography>
         <Box
           sx={{
-            marginBlock: '20px',
-            padding: '25px',
-            border: '1px solid black',
-            backgroundColor: 'white'
+            marginBlock: "20px",
+            padding: "25px",
+            border: "1px solid black",
+            backgroundColor: "white"
           }}
         >
           <DoorsSlider isExistedHandle={isExistedHandle} />
@@ -60,10 +60,10 @@ export default function DoorHandles() {
 
         <Box
           sx={{
-            marginBlock: '20px',
-            padding: '25px',
-            border: '1px solid black',
-            backgroundColor: 'white'
+            marginBlock: "20px",
+            padding: "25px",
+            border: "1px solid black",
+            backgroundColor: "white"
           }}
         >
           {handles?.map((item, i) => (
@@ -106,11 +106,11 @@ export default function DoorHandles() {
               href="/my-cart"
               onClick={() => {
                 dispatch({
-                  type: 'REMOVE_HANDLE_TO_CART',
+                  type: "REMOVE_HANDLE_TO_CART",
                   payload: {
                     customerId: CUSTOMER_ID,
-                    subType: 'handle',
-                    type: 'cabinets'
+                    subType: "handle",
+                    type: "cabinets"
                   }
                 });
               }}

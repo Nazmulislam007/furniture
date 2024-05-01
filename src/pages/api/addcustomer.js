@@ -1,22 +1,22 @@
-import { query } from '@/lib/db';
+import { query } from "@/lib/db";
 
 export default async function handler(req, res) {
   try {
     const { id, contractorId } = req.body;
-    const first_name = req.body.first_name || '';
-    const last_name = req.body.last_name || '';
-    const email = req.body.email || '';
-    const phone = req.body.phone || '';
-    const address = req.body.address || '';
-    const state = req.body.state || '';
-    const city = req.body.city || '';
-    const note = req.body.note || '';
-    const category = req.body.category || '';
-    const other = req.body.other || '';
-    const page = req.body.page || '';
+    const first_name = req.body.first_name || "";
+    const last_name = req.body.last_name || "";
+    const email = req.body.email || "";
+    const phone = req.body.phone || "";
+    const address = req.body.address || "";
+    const state = req.body.state || "";
+    const city = req.body.city || "";
+    const note = req.body.note || "";
+    const category = req.body.category || "";
+    const other = req.body.other || "";
+    const page = req.body.page || "";
 
     if (!contractorId) {
-      res.status(401).json({ message: 'You are unauthorized.' });
+      res.status(401).json({ message: "You are unauthorized." });
       return;
     }
 
@@ -55,13 +55,13 @@ export default async function handler(req, res) {
         id
       ];
 
-      console.log('querySql', querySql);
-      console.log('values', values);
+      console.log("querySql", querySql);
+      console.log("values", values);
 
       const data = await query({ query: querySql, values });
       res.status(200).json({
         data: data.affectedRows,
-        message: 'Customer Update Successfully'
+        message: "Customer Update Successfully"
       });
     } else {
       const querySql = `
@@ -85,14 +85,14 @@ export default async function handler(req, res) {
         page
       ];
 
-      console.log('querySql', querySql);
-      console.log('values', values);
+      console.log("querySql", querySql);
+      console.log("values", values);
 
       const data = await query({ query: querySql, values });
-      res.status(200).json({ id: data.insertId, message: 'Customer Add Successfully' });
+      res.status(200).json({ id: data.insertId, message: "Customer Add Successfully" });
     }
   } catch (error) {
-    console.error('error', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error("error", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 }

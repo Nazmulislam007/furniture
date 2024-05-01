@@ -10,11 +10,11 @@ import {
   REMOVE_TO_CART,
   SELECT_PRODUCT,
   SORTED_BY
-} from './actionTypes';
+} from "./actionTypes";
 
 function isAllorNot(name, value, state) {
-  if (name === 'All' && value === 'All') return [];
-  if (value === 'All') {
+  if (name === "All" && value === "All") return [];
+  if (value === "All") {
     return [...state.storeFilterOptions.filter((option) => Object.keys(option)[0] !== name)];
   }
   return [
@@ -58,7 +58,7 @@ export const reducer = (state, { type, payload }) => {
       };
     }
 
-    case 'STORE_FILTER_OPTIONS': {
+    case "STORE_FILTER_OPTIONS": {
       const { name, value } = payload;
 
       return {
@@ -104,7 +104,7 @@ export const reducer = (state, { type, payload }) => {
       };
     }
 
-    case 'ADD_LINE_ITEM': {
+    case "ADD_LINE_ITEM": {
       return {
         ...state,
         addtoCart: {
@@ -122,7 +122,7 @@ export const reducer = (state, { type, payload }) => {
         }
       };
     }
-    case 'REMOVE_LINE_ITEM': {
+    case "REMOVE_LINE_ITEM": {
       return {
         ...state,
         addtoCart: {
@@ -142,7 +142,7 @@ export const reducer = (state, { type, payload }) => {
       };
     }
 
-    case 'ADD_DISCOUNT_LINE_ITEM': {
+    case "ADD_DISCOUNT_LINE_ITEM": {
       return {
         ...state,
         addtoCart: {
@@ -158,7 +158,7 @@ export const reducer = (state, { type, payload }) => {
       };
     }
 
-    case 'REMOVE_DISCOUNT_LINE_ITEM': {
+    case "REMOVE_DISCOUNT_LINE_ITEM": {
       return {
         ...state,
         addtoCart: {
@@ -192,7 +192,7 @@ export const reducer = (state, { type, payload }) => {
     //      }; */
     // }
 
-    case 'SET_MY_PRICE_ADD_TO_CART': {
+    case "SET_MY_PRICE_ADD_TO_CART": {
       return {
         ...state,
         addtoCart: {
@@ -205,7 +205,7 @@ export const reducer = (state, { type, payload }) => {
                 (item) => ({
                   ...item,
                   myPrice:
-                    payload.sign === '%'
+                    payload.sign === "%"
                       ? ((item.price / 100) * payload.price).toFixed(2)
                       : payload.price
                 })
@@ -217,7 +217,7 @@ export const reducer = (state, { type, payload }) => {
     }
 
     // cabinets door handles collection and qantity;
-    case 'ADD_CABINETS_COLLECTION_TO_CART': {
+    case "ADD_CABINETS_COLLECTION_TO_CART": {
       return {
         ...state,
         addtoCart: {
@@ -239,7 +239,7 @@ export const reducer = (state, { type, payload }) => {
       };
     }
 
-    case 'REMOVE_CABINETS_COLLECTION_FROM_CART': {
+    case "REMOVE_CABINETS_COLLECTION_FROM_CART": {
       return {
         ...state,
         addtoCart: {
@@ -257,7 +257,7 @@ export const reducer = (state, { type, payload }) => {
       };
     }
 
-    case 'ADD_HANDLE_TO_CART': {
+    case "ADD_HANDLE_TO_CART": {
       return {
         ...state,
         addtoCart: {
@@ -279,7 +279,7 @@ export const reducer = (state, { type, payload }) => {
       };
     }
 
-    case 'REMOVE_SINGLE_HANDLE_TO_CART': {
+    case "REMOVE_SINGLE_HANDLE_TO_CART": {
       const filterProduct = state.addtoCart[payload.customerId].product[payload.type].filter(
         (prod) => !(prod.subType === payload.subType && prod.id === payload.id)
       );
@@ -299,7 +299,7 @@ export const reducer = (state, { type, payload }) => {
       };
     }
 
-    case 'INCREMENT_HANDLE_QTY_TO_CART': {
+    case "INCREMENT_HANDLE_QTY_TO_CART": {
       return {
         ...state,
         addtoCart: {
@@ -326,7 +326,7 @@ export const reducer = (state, { type, payload }) => {
       };
     }
 
-    case 'REMOVE_HANDLE_TO_CART': {
+    case "REMOVE_HANDLE_TO_CART": {
       return {
         ...state,
         addtoCart: {
@@ -344,7 +344,7 @@ export const reducer = (state, { type, payload }) => {
       };
     }
 
-    case 'DECREMENT_HANDLE_QTY_TO_CART': {
+    case "DECREMENT_HANDLE_QTY_TO_CART": {
       return {
         ...state,
         addtoCart: {
@@ -371,7 +371,7 @@ export const reducer = (state, { type, payload }) => {
       };
     }
 
-    case 'INCREMENT_CABINETS_QTY': {
+    case "INCREMENT_CABINETS_QTY": {
       return {
         ...state,
         addtoCart: {
@@ -398,7 +398,7 @@ export const reducer = (state, { type, payload }) => {
       };
     }
 
-    case 'DECREMENT_CABINETS_QTY': {
+    case "DECREMENT_CABINETS_QTY": {
       return {
         ...state,
         addtoCart: {
@@ -442,7 +442,7 @@ export const reducer = (state, { type, payload }) => {
       };
     }
 
-    case 'INCREMENT_HANDLE_QTY': {
+    case "INCREMENT_HANDLE_QTY": {
       return {
         ...state,
         handles: state.handles.map((item) => {
@@ -463,7 +463,7 @@ export const reducer = (state, { type, payload }) => {
       };
     }
 
-    case 'DECREMENT_HANDLE_QTY': {
+    case "DECREMENT_HANDLE_QTY": {
       return {
         ...state,
         handles: state.handles
@@ -482,7 +482,7 @@ export const reducer = (state, { type, payload }) => {
       };
     }
 
-    case 'UPDATE_HANDLE_STATE': {
+    case "UPDATE_HANDLE_STATE": {
       return {
         ...state,
         handles: payload

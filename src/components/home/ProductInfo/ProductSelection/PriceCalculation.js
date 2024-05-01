@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 export default function PriceCalculation({ name, CUSTOMER_ID }) {
   const { addtoCart, selectedProduct, dispatch } = useSeletedProduct();
-  const { price } = selectedProduct;
+  const { price } = selectedProduct || {};
   const sqft = selectedProduct?.["sqft/case"];
   const [inputSqft, setInputSqft] = useState("");
   const [showCalc, setShowCalc] = useState(false);
@@ -65,12 +65,12 @@ export default function PriceCalculation({ name, CUSTOMER_ID }) {
 
   // is the product exist already or not.
 
-  const mySetPrice = CUSTOMER_ID && addtoCart[CUSTOMER_ID]?.myPrice[name];
+  // const mySetPrice = CUSTOMER_ID && addtoCart[CUSTOMER_ID]?.myPrice[name];
 
-  const myPrice =
-    mySetPrice && mySetPrice?.sign === "%"
-      ? ((selectedProduct?.price / 100) * mySetPrice?.price).toFixed(2)
-      : mySetPrice?.price;
+  // const myPrice =
+  //   mySetPrice && mySetPrice?.sign === "%"
+  //     ? ((selectedProduct?.price / 100) * mySetPrice?.price).toFixed(2)
+  //     : mySetPrice?.price;
 
   useEffect(() => {
     setQuantity(isExistProduct?.quantity);

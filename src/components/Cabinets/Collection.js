@@ -1,15 +1,15 @@
 import { useSeletedProduct } from "@/Context/ProductInfoProvider/ProductInfoProvider";
 import { addCabinetsCollectionFn } from "@/Context/ProductInfoProvider/actions";
-import { getCorners, getDrawersFromDb } from "@/Context/utility";
+import { PLEASE_LOGIN } from "@/Context/constant";
+import { cabinetsCart, getCorners, getDrawersFromDb } from "@/Context/utility";
+import loggedInUser from "@/lib/isUserAvailable";
 import { Box, Stack, Typography } from "@mui/material";
-import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import AddToCartButton from "../AddToCartButton";
 import SelectedProduct from "./SelectedProduct";
 
-const CUSTOMER_ID = 23;
-
 export default function Collection() {
+  const CUSTOMER_ID = loggedInUser?.customer_id;
   const [drawer, setDrawer] = useState({});
   const [corner, setCorner] = useState({});
   const { selectedProduct, dispatch, collection, addtoCart } = useSeletedProduct() || {};
@@ -24,7 +24,7 @@ export default function Collection() {
     }
   }
 
-  async function fetchCornerData() {
+  async function fetchCornerData(corner_id) {
     try {
       const data = await getCorners(corner_id);
       setCorner(data);
@@ -37,13 +37,13 @@ export default function Collection() {
     if (id && drawer_id) {
       getDrawers(drawer_id);
     }
-  }, [id]);
+  }, [id, drawer_id]);
 
   useEffect(() => {
     if (id && corner_id) {
       fetchCornerData(corner_id);
     }
-  }, [id]);
+  }, [id, corner_id]);
 
   // console.log(addtoCart[CUSTOMER_ID].product);
 
@@ -60,7 +60,7 @@ export default function Collection() {
   const initialCollectionState = useMemo(
     () => [
       {
-        id: `drawer-${drawer?.drawer_id}`,
+        id: drawer?.drawer_id,
         name: `${name}+Drawer`,
         price: drawer?.price,
         img: drawer?.img,
@@ -69,7 +69,7 @@ export default function Collection() {
       },
       { id, name: `${name} only`, price, img, quantity: 0, color },
       {
-        id: `corner-${corner?.corner_id}`,
+        id: corner?.corner_id,
         name: `${name} corner`,
         price: corner?.price,
         img: corner?.img,
@@ -96,7 +96,7 @@ export default function Collection() {
       );
 
     dispatch(addCabinetsCollectionFn(initialCollectionState));
-  }, [color, corner, dispatch, drawer, id, img, name, price, catagory]);
+  }, [color, dispatch, id, img, name, price, catagory, corner, drawer]);
 
   // total price
   const totalPrice = collection?.reduce((prev, curr) => prev + curr.price * curr.quantity, 0);
@@ -105,10 +105,15 @@ export default function Collection() {
   const mySetPrice = addtoCart[CUSTOMER_ID].myPrice.cabinets;
   const myPrice =
     mySetPrice.sign === "%"
-      ? ((selectedProduct.price / 100) * mySetPrice.price).toFixed(2)
+      ? ((selectedProduct?.price / 100) * mySetPrice?.price).toFixed(2)
       : mySetPrice.price;
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
+    if (!CUSTOMER_ID) {
+      alert(PLEASE_LOGIN);
+      return false;
+    }
+
     if (isExistProducts.length > 0) {
       dispatch({
         type: "REMOVE_CABINETS_COLLECTION_FROM_CART",
@@ -141,11 +146,16 @@ export default function Collection() {
         myPrice: +myPrice + prod.price,
         vendor: selectedProduct.vendor,
         customerId: CUSTOMER_ID,
-        catagory: prod.name,
-        addedAt: moment().format("DD MMM YYYY")
+        catagory: prod.name
       }));
 
-    if (cabinetCollection.length === 0) return;
+    if (cabinetCollection.length === 0) return alert("You must select at least one product");
+
+    try {
+      await cabinetsCart(cabinetCollection);
+    } catch (error) {
+      console.log(`Adding cabinet cart error: ${error}`);
+    }
 
     dispatch({
       type: "ADD_CABINETS_COLLECTION_TO_CART",

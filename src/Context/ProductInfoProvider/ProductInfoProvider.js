@@ -1,5 +1,5 @@
-import { createContext, useContext, useMemo, useReducer, useState } from 'react';
-import { reducer } from './reducer';
+import { createContext, useContext, useMemo, useReducer, useState } from "react";
+import { reducer } from "./reducer";
 
 const ProductInfoContext = createContext();
 
@@ -14,7 +14,7 @@ export default function ProductInfoProvider({ children }) {
     selectedProduct: {},
 
     // when customer want to see product from cart page
-    watchProductId: '',
+    watchProductId: "",
 
     // vanities collection state calculating quantity
     collection: [],
@@ -22,8 +22,8 @@ export default function ProductInfoProvider({ children }) {
 
     // filter
     storeFilterOptions: [],
-    filterByPrice: { min: '', max: '' },
-    sortedBy: 'Posted: newest first',
+    filterByPrice: { min: "", max: "" },
+    sortedBy: "Posted: newest first",
 
     // add to the cart...
     addtoCart: {
@@ -54,16 +54,16 @@ export default function ProductInfoProvider({ children }) {
         },
         customDiscountItem: [{ id: 1, price: 20 }],
         myPrice: {
-          vanities: { sign: '%', price: 0 },
-          flooring: { sign: '%', price: 0 },
-          tiles: { sign: '%', price: 0 },
-          countertop: { sign: '%', price: 0 },
-          kitchenFaucets: { sign: '%', price: 0 },
-          bathroomFaucets: { sign: '%', price: 0 },
-          cabinets: { sign: '%', price: 0 },
-          countertops: { sign: '%', price: 0 },
-          faucetkitchen: { sign: '%', price: 0 },
-          faucetbathroom: { sign: '%', price: 0 }
+          vanities: { sign: "%", price: 0 },
+          flooring: { sign: "%", price: 0 },
+          tiles: { sign: "%", price: 0 },
+          countertop: { sign: "%", price: 0 },
+          kitchenFaucets: { sign: "%", price: 0 },
+          bathroomFaucets: { sign: "%", price: 0 },
+          cabinets: { sign: "%", price: 0 },
+          countertops: { sign: "%", price: 0 },
+          faucetkitchen: { sign: "%", price: 0 },
+          faucetbathroom: { sign: "%", price: 0 }
         }
       },
       24: {

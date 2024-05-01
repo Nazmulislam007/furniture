@@ -14,7 +14,7 @@ const {
   REMOVE_DOOR_HANDLES,
   ACTIVE_PRODUCT_STATUS,
   PASSIVE_PRODUCT_STATUS
-} = require('./actionTypes');
+} = require("./actionTypes");
 
 const selectProduct = (select) => ({
   type: SELECT_PRODUCT,

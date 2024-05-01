@@ -67,7 +67,7 @@ export default function ProductSelection({ pathname }) {
           </Typography>
           <Typography variant="subtitle1" color="blue" component="div">
             ${price}
-            {selectedProduct["sqft/case"] && "/sqft"}
+            {selectedProduct?.["sqft/case"] && "/sqft"}
           </Typography>
         </Box>
       </Box>
