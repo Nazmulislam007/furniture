@@ -1,48 +1,74 @@
 /* eslint-disable default-case */
 import { useSeletedProduct } from "@/Context/ProductInfoProvider/ProductInfoProvider";
+import { cabinetsCart, deleteAllCabinetsFromCart } from "@/Context/utility";
+import loggedInUser from "@/lib/isUserAvailable";
 import { Box, Stack, Typography } from "@mui/material";
 import Link from "next/link";
 import AddToCartButton from "../AddToCartButton";
 import DoorsSlider from "./DoorsSlider";
 import SelectedProduct from "./SelectedProduct";
 
-const CUSTOMER_ID = 23;
-
 export default function DoorHandles() {
-  const { addtoCart, handles, dispatch } = useSeletedProduct() || {};
+  const CUSTOMER_ID = loggedInUser?.customer_id;
+  const {
+    addtoCart,
+    handles,
+    isExistCabinetsInDB,
+    setFetchHandlesCart,
+    dispatch,
+    isExistedHandlesInDB
+  } = useSeletedProduct() || {};
 
   // if any product of cabinets selected then show door handles
-  const isAddProduct = addtoCart[CUSTOMER_ID].product.cabinets?.find(
-    (cart) => cart.type === "cabinets"
-  );
+  // const isAddProduct = addtoCart[CUSTOMER_ID].product.cabinets?.find(
+  //   (cart) => cart.type === "cabinets"
+  // );
 
   // is the product of handles are exist or not
-  const isExistedHandle = addtoCart[CUSTOMER_ID].product.cabinets?.filter(
-    (cart) => cart.subType === "handle"
-  );
+  // const isExistedHandle = addtoCart[CUSTOMER_ID].product.cabinets?.filter(
+  //   (cart) => cart.subType === "handle"
+  // );
 
   // total price and total qantity;
   const totalPrice = handles?.reduce((prev, curr) => prev + curr.price * curr.quantity, 0);
 
-  const handleAddToCart = () => {
-    if (isExistedHandle?.length > 0)
-      return dispatch({
-        type: "REMOVE_HANDLE_TO_CART",
-        payload: {
-          customerId: CUSTOMER_ID,
-          subType: "handle",
-          type: "cabinets"
-        }
-      });
+  const handleAddToCart = async () => {
+    // if (isExistedHandle?.length > 0) {
+    //   return dispatch({
+    //     type: "REMOVE_HANDLE_TO_CART",
+    //     payload: {
+    //       customerId: CUSTOMER_ID,
+    //       subType: "handle",
+    //       type: "cabinets"
+    //     }
+    //   });
+    // }
 
-    dispatch({
-      type: "ADD_HANDLE_TO_CART",
-      payload: { data: handles, customerId: CUSTOMER_ID, type: "cabinets" }
-    });
+    if (isExistedHandlesInDB?.length > 0) {
+      deleteAllCabinetsFromCart(
+        CUSTOMER_ID,
+        isExistedHandlesInDB.map((handle) => `'${handle.product_id}'`)
+      );
+      setFetchHandlesCart((prev) => prev + 1);
+    }
+
+    if (!isExistedHandlesInDB?.length) {
+      try {
+        await cabinetsCart(handles, 8);
+        setFetchHandlesCart((prev) => prev + 1);
+      } catch (error) {
+        console.log(`Adding cabinet cart error: ${error}`);
+      }
+
+      // dispatch({
+      //   type: "ADD_HANDLE_TO_CART",
+      //   payload: { data: handles, customerId: CUSTOMER_ID, type: "cabinets" }
+      // });
+    }
   };
 
   return (
-    (isAddProduct || isExistedHandle?.length > 0) && (
+    (isExistCabinetsInDB.length > 0 || isExistedHandlesInDB?.length > 0) && (
       <>
         <Typography component="p" fontSize="25px" marginTop="35px" fontWeight="500">
           Now Select Your Door Handles
@@ -55,7 +81,7 @@ export default function DoorHandles() {
             backgroundColor: "white"
           }}
         >
-          <DoorsSlider isExistedHandle={isExistedHandle} />
+          <DoorsSlider isExistedHandle={isExistedHandlesInDB} />
         </Box>
 
         <Box
@@ -66,13 +92,15 @@ export default function DoorHandles() {
             backgroundColor: "white"
           }}
         >
-          {handles?.map((item, i) => (
+          {(isExistedHandlesInDB?.length > 0 ? isExistedHandlesInDB : handles)?.map((item, i) => (
             <SelectedProduct
               item={item}
               key={i}
               dispatch={dispatch}
               handles
-              isExistedHandle={isExistedHandle?.length > 0}
+              CUSTOMER_ID={CUSTOMER_ID}
+              isExistedHandle={isExistedHandlesInDB?.length > 0}
+              setFetchHandlesCart={setFetchHandlesCart}
             />
           ))}
 
@@ -97,7 +125,7 @@ export default function DoorHandles() {
             </Typography>
             <AddToCartButton
               size="300px"
-              isExistProduct={isExistedHandle?.length > 0}
+              isExistProduct={isExistedHandlesInDB?.length > 0}
               onClick={handleAddToCart}
             />
           </Stack>
@@ -115,7 +143,20 @@ export default function DoorHandles() {
                 });
               }}
             >
-              <Typography component="button" color="primary" fontWeight="500">
+              <Typography
+                component="button"
+                color="primary"
+                fontWeight="500"
+                onClick={() => {
+                  if (isExistedHandlesInDB.length > 0) {
+                    deleteAllCabinetsFromCart(
+                      CUSTOMER_ID,
+                      isExistedHandlesInDB.map((handle) => `'${handle.product_id}'`)
+                    );
+                    setFetchHandlesCart((prev) => prev + 1);
+                  }
+                }}
+              >
                 Continue without selecting door handles
               </Typography>
             </Link>

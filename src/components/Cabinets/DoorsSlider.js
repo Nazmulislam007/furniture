@@ -1,6 +1,12 @@
 import { useSeletedProduct } from "@/Context/ProductInfoProvider/ProductInfoProvider";
 import { addDoorHandlesFn, removeDoorHandlesFn } from "@/Context/ProductInfoProvider/actions";
-import { getHandlesfromDB } from "@/Context/utility";
+import {
+  cabinetsCart,
+  deleteAllCabinetsFromCart,
+  getHandlesfromDB,
+  getHanldesFromCart
+} from "@/Context/utility";
+import loggedInUser from "@/lib/isUserAvailable";
 import { Typography, useMediaQuery } from "@mui/material";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -9,12 +15,19 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-const CUSTOMER_ID = 23;
-
 export default function DoorsSlider({ isExistedHandle }) {
+  const CUSTOMER_ID = loggedInUser?.customer_id;
   const [products, setProducts] = useState([]);
   const matches = useMediaQuery("(max-width:760px)");
-  const { dispatch, handles, addtoCart } = useSeletedProduct() || {};
+  const {
+    dispatch,
+    handles,
+    fetchHandlesCart,
+    setIsExistedHandlesInDB,
+    isExistedHandlesInDB,
+    addtoCart,
+    setFetchHandlesCart
+  } = useSeletedProduct() || {};
 
   async function getHandles() {
     try {
@@ -27,13 +40,29 @@ export default function DoorsSlider({ isExistedHandle }) {
 
   useEffect(() => {
     getHandles();
-  }, []);
+  }, [fetchHandlesCart]);
 
   const isAdded = (id) => {
-    const isExist = handles?.find((item) => item.id === id);
+    const isExist = (isExistedHandlesInDB.length > 0 ? isExistedHandlesInDB : handles)?.find(
+      (item) => item.product_id === id
+    );
     if (isExist) return "Added";
     return "";
   };
+
+  async function fetchHandlesFromDB() {
+    try {
+      const data = await getHanldesFromCart();
+      setIsExistedHandlesInDB(data);
+    } catch (error) {
+      console.log(`fetch handles error : ${error}`);
+    }
+  }
+
+  // get handles from cart
+  useEffect(() => {
+    fetchHandlesFromDB();
+  }, [fetchHandlesCart]);
 
   useEffect(() => {
     dispatch({
@@ -50,32 +79,33 @@ export default function DoorsSlider({ isExistedHandle }) {
   const myPrice =
     mySetPrice.sign === "%" ? ((totalPrice / 100) * mySetPrice.price).toFixed(2) : mySetPrice.price;
 
-  const handleAddProduct = (product) => {
-    const isExisted = isExistedHandle?.find((item) => item.id === product.id);
+  const handleAddProduct = async (product) => {
+    const isExisted = isExistedHandlesInDB?.find((item) => item.product_id === product.product_id);
 
-    if (isAdded(product.id) !== "") {
-      dispatch(removeDoorHandlesFn(product.id));
+    if (isAdded(product.product_id) !== "") {
+      dispatch(removeDoorHandlesFn(product.product_id));
 
       if (isExisted) {
-        dispatch({
-          type: "REMOVE_SINGLE_HANDLE_TO_CART",
-          payload: {
-            customerId: CUSTOMER_ID,
-            id: isExisted.id,
-            subType: "handle",
-            type: "cabinets"
-          }
-        });
+        deleteAllCabinetsFromCart(CUSTOMER_ID, [`'${isExisted.product_id}'`]);
+        setFetchHandlesCart((prev) => prev + 1);
+        // dispatch({
+        //   type: "REMOVE_SINGLE_HANDLE_TO_CART",
+        //   payload: {
+        //     customerId: CUSTOMER_ID,
+        //     id: isExisted.product_id,
+        //     subType: "handle",
+        //     type: "cabinets"
+        //   }
+        // });
       }
       return;
     }
 
     // add product when other product is already existed
-    if (isExistedHandle?.length > 0 && !isExisted) {
-      dispatch({
-        type: "ADD_HANDLE_TO_CART",
-        payload: {
-          data: [
+    if (isExistedHandlesInDB?.length > 0 && !isExisted) {
+      try {
+        await cabinetsCart(
+          [
             {
               ...product,
               quantity: 1,
@@ -85,11 +115,30 @@ export default function DoorsSlider({ isExistedHandle }) {
               customerId: CUSTOMER_ID
             }
           ],
-          customerId: CUSTOMER_ID,
-          type: "cabinets",
-          subType: "handle"
-        }
-      });
+          8
+        );
+        setFetchHandlesCart((prev) => prev + 1);
+      } catch (error) {
+        console.log(`Adding cabinet cart error: ${error}`);
+      }
+      // dispatch({
+      //   type: "ADD_HANDLE_TO_CART",
+      //   payload: {
+      //     data: [
+      //       {
+      //         ...product,
+      //         quantity: 1,
+      //         myPrice: +myPrice + +product.price,
+      //         type: "cabinets",
+      //         subType: "handle",
+      //         customerId: CUSTOMER_ID
+      //       }
+      //     ],
+      //     customerId: CUSTOMER_ID,
+      //     type: "cabinets",
+      //     subType: "handle"
+      //   }
+      // });
     }
 
     dispatch(
@@ -153,10 +202,10 @@ export default function DoorsSlider({ isExistedHandle }) {
             <span className="price">${product.price}</span>
           </div>
           <Typography textAlign="center" fontWeight="bold" fontSize={{ md: 14, xs: 12 }}>
-            {product.name}
+            {product.product_name}
           </Typography>
           <Typography textAlign="center" fontWeight="bold">
-            {isAdded(product.id)}
+            {isAdded(product.product_id)}
           </Typography>
         </SwiperSlide>
       ))}

@@ -256,16 +256,67 @@ export async function getHandlesfromDB() {
   const res = await response.json();
   return res.handles;
 }
-
-export async function cabinetsCart(products) {
+export async function cabinetsCart(products, category_id) {
   const apiUrlEndpoint = `${apiUrl}/api/cabinets/addCabinetsToCart`;
   const response = await fetch(apiUrlEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify(products)
+    body: JSON.stringify({ products, category_id })
   });
   const res = await response.json();
   return res;
+}
+export async function getCabinetsCartDb(customer_id, product_id, drawer_id, corner_id) {
+  const apiUrlEndpoint = `${apiUrl}/api/cabinets/getCabinetsCart?customerId=${customer_id}&product_id=${product_id}&drawer_id=${drawer_id}&corner_id=${corner_id}`;
+  const response = await fetch(apiUrlEndpoint);
+  const res = await response.json();
+  return res.cabinets;
+}
+export async function incrementCabinteQty(
+  customer_id,
+  product_id,
+  quantity,
+  price,
+  action,
+  subtotal,
+  category_id
+) {
+  const apiUrlEndpoint = `${apiUrl}/api/cabinets/increCabinetsQty`;
+  const response = await fetch(apiUrlEndpoint, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      customer_id,
+      product_id,
+      price,
+      quantity,
+      action,
+      subtotal,
+      category_id
+    })
+  });
+  const res = await response.json();
+  return res;
+}
+export async function deleteAllCabinetsFromCart(customer_id, ids) {
+  const apiUrlEndpoint = `${apiUrl}/api/cabinets/deleteAllCabinets`;
+  const response = await fetch(apiUrlEndpoint, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ customer_id, ids })
+  });
+  const res = await response.json();
+  return res;
+}
+export async function getHanldesFromCart() {
+  const apiUrlEndpoint = `${apiUrl}/api/cabinets/getHanldesFromCart`;
+  const response = await fetch(apiUrlEndpoint);
+  const res = await response.json();
+  return res.handles;
 }

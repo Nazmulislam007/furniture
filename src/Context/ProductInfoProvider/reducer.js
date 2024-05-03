@@ -432,21 +432,12 @@ export const reducer = (state, { type, payload }) => {
       };
     }
 
+    // these are called when not a single product is added to the database.
     case INCREMENT_QANTITY: {
       return {
         ...state,
         collection: state.collection.map((item) => {
-          if (item.id === payload) return { ...item, quantity: item.quantity + 1 };
-          return item;
-        })
-      };
-    }
-
-    case "INCREMENT_HANDLE_QTY": {
-      return {
-        ...state,
-        handles: state.handles.map((item) => {
-          if (item.id === payload) return { ...item, quantity: item.quantity + 1 };
+          if (item.product_id === payload) return { ...item, quantity: item.quantity + 1 };
           return item;
         })
       };
@@ -457,7 +448,17 @@ export const reducer = (state, { type, payload }) => {
         ...state,
         collection: state.collection.map((item) => {
           if (item.quantity === 0) return item;
-          if (item.id === payload) return { ...item, quantity: item.quantity - 1 };
+          if (item.product_id === payload) return { ...item, quantity: item.quantity - 1 };
+          return item;
+        })
+      };
+    }
+
+    case "INCREMENT_HANDLE_QTY": {
+      return {
+        ...state,
+        handles: state.handles.map((item) => {
+          if (item.product_id === payload) return { ...item, quantity: item.quantity + 1 };
           return item;
         })
       };
@@ -468,7 +469,7 @@ export const reducer = (state, { type, payload }) => {
         ...state,
         handles: state.handles
           .map((item) => {
-            if (item.id === payload) return { ...item, quantity: item.quantity - 1 };
+            if (item.product_id === payload) return { ...item, quantity: item.quantity - 1 };
             return item;
           })
           .filter((item) => item.quantity !== 0)
@@ -492,7 +493,7 @@ export const reducer = (state, { type, payload }) => {
     case REMOVE_DOOR_HANDLES: {
       return {
         ...state,
-        handles: state.handles.filter((item) => item.id !== payload)
+        handles: state.handles.filter((item) => item.product_id !== payload)
       };
     }
 

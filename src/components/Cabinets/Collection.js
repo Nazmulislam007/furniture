@@ -1,7 +1,13 @@
 import { useSeletedProduct } from "@/Context/ProductInfoProvider/ProductInfoProvider";
 import { addCabinetsCollectionFn } from "@/Context/ProductInfoProvider/actions";
 import { PLEASE_LOGIN } from "@/Context/constant";
-import { cabinetsCart, getCorners, getDrawersFromDb } from "@/Context/utility";
+import {
+  cabinetsCart,
+  deleteAllCabinetsFromCart,
+  getCabinetsCartDb,
+  getCorners,
+  getDrawersFromDb
+} from "@/Context/utility";
 import loggedInUser from "@/lib/isUserAvailable";
 import { Box, Stack, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
@@ -12,8 +18,17 @@ export default function Collection() {
   const CUSTOMER_ID = loggedInUser?.customer_id;
   const [drawer, setDrawer] = useState({});
   const [corner, setCorner] = useState({});
-  const { selectedProduct, dispatch, collection, addtoCart } = useSeletedProduct() || {};
-  const { id, name, price, img, drawer_id, corner_id, color, catagory } = selectedProduct || {};
+  const {
+    selectedProduct,
+    dispatch,
+    collection,
+    isExistCabinetsInDB,
+    setIsExistCabinetsInDB,
+    fetchCabinetsCart,
+    setFetchCabinetsCart,
+    addtoCart
+  } = useSeletedProduct() || {};
+  const { product_id, name, price, img, drawer_id, corner_id, color } = selectedProduct || {};
 
   async function getDrawers(drawer_id) {
     try {
@@ -33,26 +48,40 @@ export default function Collection() {
     }
   }
 
-  useEffect(() => {
-    if (id && drawer_id) {
-      getDrawers(drawer_id);
+  async function getCabinetsCart(CUSTOMER_ID, id, drawer_id, corner_id) {
+    try {
+      const data = await getCabinetsCartDb(CUSTOMER_ID, id, drawer_id, corner_id);
+      setIsExistCabinetsInDB(data);
+    } catch (error) {
+      console.log(`Fetching cabinets cart error: ${error}`);
     }
-  }, [id, drawer_id]);
+  }
 
   useEffect(() => {
-    if (id && corner_id) {
+    if (product_id && drawer_id) {
+      getDrawers(drawer_id);
+    }
+  }, [product_id, drawer_id]);
+
+  useEffect(() => {
+    if (product_id && corner_id) {
       fetchCornerData(corner_id);
     }
-  }, [id, corner_id]);
+  }, [product_id, corner_id]);
 
   // console.log(addtoCart[CUSTOMER_ID].product);
 
   // is the prododuct already added in the cart?
-  const isExistProducts = addtoCart[CUSTOMER_ID].product.cabinets?.filter(
-    (cart) => cart.id === id || cart.id === drawer?.id || cart.id === corner?.id
-  );
+  // const isExistProducts = addtoCart[CUSTOMER_ID].product.cabinets?.filter(
+  //   (cart) => cart.id === id || cart.id === drawer?.id || cart.id === corner?.id
+  // );
 
-  // console.log(isExistProducts);
+  useEffect(() => {
+    if (CUSTOMER_ID) {
+      if (product_id || drawer_id || corner_id)
+        getCabinetsCart(CUSTOMER_ID, product_id, drawer_id, corner_id);
+    }
+  }, [CUSTOMER_ID, product_id, drawer_id, corner_id, fetchCabinetsCart]);
 
   // is the product of handles are exist or not
   // const isExistHandles = addtoCart[CUSTOMER_ID].product.cabinets?.find((cart) => cart.id === handles[0]?.id);
@@ -60,53 +89,53 @@ export default function Collection() {
   const initialCollectionState = useMemo(
     () => [
       {
-        id: drawer?.drawer_id,
-        name: `${name}+Drawer`,
+        product_id: drawer?.drawer_id,
+        product_name: `${name}+Drawer`,
         price: drawer?.price,
         img: drawer?.img,
         quantity: 0,
         color: drawer?.color
       },
-      { id, name: `${name} only`, price, img, quantity: 0, color },
+      { product_id, product_name: `${name} only`, price, img, quantity: 0, color },
       {
-        id: corner?.corner_id,
-        name: `${name} corner`,
+        product_id: corner?.corner_id,
+        product_name: `${name} corner`,
         price: corner?.price,
         img: corner?.img,
         quantity: 0,
         color: corner?.color
       }
     ],
-    [color, corner, drawer, id, img, name, price]
+    [color, corner, drawer, product_id, img, name, price]
   );
 
   const setZeroQtyCollection = initialCollectionState.filter((prod) =>
-    isExistProducts.every((col) => col.id !== prod.id)
+    isExistCabinetsInDB.every((col) => col.product_id !== prod.product_id)
   );
 
   // // inital collection
   useEffect(() => {
-    if (isExistProducts.length > 0)
+    if (isExistCabinetsInDB.length > 0)
       return dispatch(
         addCabinetsCollectionFn(
           setZeroQtyCollection.length > 0
-            ? [...isExistProducts, ...setZeroQtyCollection]
-            : isExistProducts
+            ? [...isExistCabinetsInDB, ...setZeroQtyCollection]
+            : isExistCabinetsInDB
         )
       );
 
     dispatch(addCabinetsCollectionFn(initialCollectionState));
-  }, [color, dispatch, id, img, name, price, catagory, corner, drawer]);
+  }, [initialCollectionState, isExistCabinetsInDB]);
 
   // total price
   const totalPrice = collection?.reduce((prev, curr) => prev + curr.price * curr.quantity, 0);
 
   // my set price
-  const mySetPrice = addtoCart[CUSTOMER_ID].myPrice.cabinets;
-  const myPrice =
-    mySetPrice.sign === "%"
-      ? ((selectedProduct?.price / 100) * mySetPrice?.price).toFixed(2)
-      : mySetPrice.price;
+  // const mySetPrice = addtoCart[CUSTOMER_ID].myPrice.cabinets;
+  const myPrice = 10;
+  // mySetPrice.sign === "%"
+  //   ? ((selectedProduct?.price / 100) * mySetPrice?.price).toFixed(2)
+  //   : mySetPrice.price;
 
   const handleAddToCart = async () => {
     if (!CUSTOMER_ID) {
@@ -114,15 +143,20 @@ export default function Collection() {
       return false;
     }
 
-    if (isExistProducts.length > 0) {
-      dispatch({
-        type: "REMOVE_CABINETS_COLLECTION_FROM_CART",
-        payload: {
-          customerId: CUSTOMER_ID,
-          type: "cabinets",
-          ids: isExistProducts.map((prod) => prod.id)
-        }
-      });
+    if (isExistCabinetsInDB.length > 0) {
+      await deleteAllCabinetsFromCart(
+        CUSTOMER_ID,
+        isExistCabinetsInDB.map((prod) => `'${prod.product_id}'`)
+      );
+      setFetchCabinetsCart((prev) => prev + 1);
+      // dispatch({
+      //   type: "REMOVE_CABINETS_COLLECTION_FROM_CART",
+      //   payload: {
+      //     customerId: CUSTOMER_ID,
+      //     type: "cabinets",
+      //     ids: isExistProducts.map((prod) => prod.product_id)
+      //   }
+      // });
 
       // if remove the cart of cabinet then remove all handles also...
 
@@ -145,22 +179,22 @@ export default function Collection() {
         type: "cabinets",
         myPrice: +myPrice + prod.price,
         vendor: selectedProduct.vendor,
-        customerId: CUSTOMER_ID,
-        catagory: prod.name
+        customerId: CUSTOMER_ID
       }));
 
     if (cabinetCollection.length === 0) return alert("You must select at least one product");
 
     try {
-      await cabinetsCart(cabinetCollection);
+      await cabinetsCart(cabinetCollection, 7);
+      setFetchCabinetsCart((prev) => prev + 1);
     } catch (error) {
       console.log(`Adding cabinet cart error: ${error}`);
     }
 
-    dispatch({
-      type: "ADD_CABINETS_COLLECTION_TO_CART",
-      payload: cabinetCollection
-    });
+    // dispatch({
+    //   type: "ADD_CABINETS_COLLECTION_TO_CART",
+    //   payload: cabinetCollection
+    // });
   };
 
   return (
@@ -184,9 +218,11 @@ export default function Collection() {
       {collection?.map((item, i) => (
         <SelectedProduct
           key={i}
-          item={{ ...item, vendor: selectedProduct.vendor }}
+          item={{ ...item, vendor: selectedProduct?.vendor }}
           dispatch={dispatch}
-          isExistProducts={isExistProducts}
+          isExistCabinetsInDB={isExistCabinetsInDB}
+          CUSTOMER_ID={CUSTOMER_ID}
+          setFetchCabinetsCart={setFetchCabinetsCart}
         />
       ))}
 
@@ -210,7 +246,7 @@ export default function Collection() {
         </Typography>
         <AddToCartButton
           size="300px"
-          isExistProduct={isExistProducts.length > 0}
+          isExistProduct={isExistCabinetsInDB.length > 0}
           onClick={handleAddToCart}
         />
       </Stack>

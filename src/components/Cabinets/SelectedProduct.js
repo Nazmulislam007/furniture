@@ -1,48 +1,82 @@
 import { decreQtyFn, increQtyFn } from "@/Context/ProductInfoProvider/actions";
+import { cabinetsCart, deleteAllCabinetsFromCart, incrementCabinteQty } from "@/Context/utility";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import moment from "moment";
 import Image from "next/image";
 
-const CUSTOMER_ID = 23;
-
 export default function SelectedProduct({
   item,
   dispatch,
-  isExistProducts,
+  isExistCabinetsInDB,
   isExistedHandle,
-  handles
+  handles,
+  CUSTOMER_ID,
+  setFetchCabinetsCart,
+  setFetchHandlesCart
 }) {
-  const { id, name, price, img, quantity, type } = item || {};
+  const { product_id, name, product_name, price, img, quantity, type, color, subtotal } =
+    item || {};
 
-  const existProduct = isExistProducts?.find((prod) => prod.id === id);
+  const existProduct = isExistCabinetsInDB?.find((prod) => prod.product_id === product_id);
 
-  const handleIncre = () => {
+  const handleIncre = async () => {
+    const action = "increment";
+
     if (handles && isExistedHandle) {
-      dispatch({
-        type: "INCREMENT_HANDLE_QTY_TO_CART",
-        payload: {
-          customerId: CUSTOMER_ID,
-          type: "cabinets",
-          id
-        }
-      });
+      await incrementCabinteQty(CUSTOMER_ID, product_id, quantity + 1, price, action, subtotal, 8);
+      setFetchHandlesCart((prev) => prev + 1);
+      // dispatch({
+      //   type: "INCREMENT_HANDLE_QTY_TO_CART",
+      //   payload: {
+      //     customerId: CUSTOMER_ID,
+      //     type: "cabinets",
+      //     product_id
+      //   }
+      // });
     }
 
-    if (handles) return dispatch({ type: "INCREMENT_HANDLE_QTY", payload: id });
+    if (handles) return dispatch({ type: "INCREMENT_HANDLE_QTY", payload: product_id });
 
     if (existProduct) {
+      await incrementCabinteQty(
+        CUSTOMER_ID,
+        existProduct.product_id,
+        existProduct.quantity + 1,
+        price,
+        action,
+        existProduct.subtotal,
+        7
+      );
+
+      setFetchCabinetsCart((prev) => prev + 1);
+
       dispatch({
         type: "INCREMENT_CABINETS_QTY",
         payload: {
           customerId: CUSTOMER_ID,
           type: "cabinets",
-          id
+          product_id
         }
       });
     }
 
     // add product with clicking increment btn when other product is already existed
-    if (isExistProducts?.length > 0 && !existProduct) {
+    if (isExistCabinetsInDB?.length > 0 && !existProduct) {
+      await cabinetsCart(
+        [
+          {
+            customerId: CUSTOMER_ID,
+            product_id,
+            price,
+            img,
+            product_name,
+            quantity: 1,
+            color
+          }
+        ],
+        7
+      );
+
       dispatch({
         type: "ADD_CABINETS_COLLECTION_TO_CART",
         payload: [
@@ -59,35 +93,72 @@ export default function SelectedProduct({
       });
     }
 
-    dispatch(increQtyFn(id));
+    dispatch(increQtyFn(product_id));
   };
 
-  const handleDecre = () => {
+  const handleDecre = async () => {
+    const action = "decrement";
     if (handles && isExistedHandle) {
-      dispatch({
-        type: "DECREMENT_HANDLE_QTY_TO_CART",
-        payload: {
-          customerId: CUSTOMER_ID,
-          type: "cabinets",
-          id
-        }
-      });
+      if (quantity - 1 === 0) {
+        deleteAllCabinetsFromCart(CUSTOMER_ID, [`'${product_id}'`]);
+      }
+
+      if (quantity - 1 > 0) {
+        await incrementCabinteQty(
+          CUSTOMER_ID,
+          product_id,
+          quantity - 1,
+          price,
+          action,
+          subtotal,
+          8
+        );
+      }
+
+      setFetchHandlesCart((prev) => prev + 1);
+
+      // dispatch({
+      //   type: "DECREMENT_HANDLE_QTY_TO_CART",
+      //   payload: {
+      //     customerId: CUSTOMER_ID,
+      //     type: "cabinets",
+      //     product_id
+      //   }
+      // });
     }
 
-    if (handles) return dispatch({ type: "DECREMENT_HANDLE_QTY", payload: id });
+    if (handles) return dispatch({ type: "DECREMENT_HANDLE_QTY", payload: product_id });
 
     if (existProduct) {
+      if (existProduct.quantity - 1 === 0) {
+        deleteAllCabinetsFromCart(CUSTOMER_ID, [`'${existProduct.product_id}'`]);
+      }
+
+      if (existProduct.quantity - 1 > 0) {
+        await incrementCabinteQty(
+          CUSTOMER_ID,
+          existProduct.product_id,
+          existProduct.quantity - 1,
+          price,
+          action,
+          existProduct.subtotal,
+          7
+        );
+      }
+
+      setFetchCabinetsCart((prev) => prev - 1);
+
       dispatch({
         type: "DECREMENT_CABINETS_QTY",
         payload: {
           customerId: CUSTOMER_ID,
           type: "cabinets",
-          id
+          product_id
         }
       });
     }
 
-    dispatch(decreQtyFn(id));
+    dispatch(decreQtyFn(product_id));
   };
 
   return (
@@ -118,13 +189,13 @@ export default function SelectedProduct({
       </Box>
       <Box>
         <Typography component="p" fontSize="18px">
-          {name}
+          {product_name}
         </Typography>
         <Typography component="p" fontWeight="500">
           {type === "handle" ? "2 pieces per pack" : "30W x 30H x 12.5D"}
         </Typography>
         <Typography component="p" fontWeight="500" color="primary" fontSize="18px">
-          ${price}
+          ${price && Number(price).toFixed(2)}
         </Typography>
       </Box>
       <Stack

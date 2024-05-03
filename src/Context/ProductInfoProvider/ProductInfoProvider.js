@@ -8,6 +8,10 @@ export const useSeletedProduct = () => useContext(ProductInfoContext);
 export default function ProductInfoProvider({ children }) {
   // this for retrieve data for each time update myprice.
   const [isUpdatedMyPrice, setIsUpdatedMyPrice] = useState(0);
+  const [isExistCabinetsInDB, setIsExistCabinetsInDB] = useState([]);
+  const [isExistedHandlesInDB, setIsExistedHandlesInDB] = useState([]);
+  const [fetchCabinetsCart, setFetchCabinetsCart] = useState(0);
+  const [fetchHandlesCart, setFetchHandlesCart] = useState(0);
 
   const [state, dispatch] = useReducer(reducer, {
     // home and corresponding pages
@@ -96,8 +100,28 @@ export default function ProductInfoProvider({ children }) {
   });
 
   const value = useMemo(
-    () => ({ ...state, dispatch, isUpdatedMyPrice, setIsUpdatedMyPrice }),
-    [state, isUpdatedMyPrice]
+    () => ({
+      ...state,
+      dispatch,
+      isUpdatedMyPrice,
+      setIsUpdatedMyPrice,
+      isExistCabinetsInDB,
+      setIsExistCabinetsInDB,
+      fetchCabinetsCart,
+      setFetchCabinetsCart,
+      isExistedHandlesInDB,
+      setIsExistedHandlesInDB,
+      fetchHandlesCart,
+      setFetchHandlesCart
+    }),
+    [
+      state,
+      isUpdatedMyPrice,
+      isExistCabinetsInDB,
+      fetchCabinetsCart,
+      isExistedHandlesInDB,
+      fetchHandlesCart
+    ]
   );
 
   return <ProductInfoContext.Provider value={value}>{children}</ProductInfoContext.Provider>;

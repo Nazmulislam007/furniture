@@ -35,7 +35,7 @@ export default function PriceCalculation({ name, CUSTOMER_ID }) {
       return elem;
     });
     setCartItems(cate);
-    const isExistProduct = cate[name]?.find((cart) => cart.product_id === selectedProduct.id);
+    const isExistProduct = cate[name]?.find((cart) => cart.product_id === selectedProduct?.id);
     setIsExistProduct(isExistProduct);
   };
 

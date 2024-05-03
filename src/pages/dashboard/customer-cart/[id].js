@@ -1,11 +1,11 @@
-import { useCustomers } from '@/Context/CustomersProvider/CustomersProvider';
-import { useSeletedProduct } from '@/Context/ProductInfoProvider/ProductInfoProvider';
-import CustomerDetails from '@/components/Cart/Customer/CustomerDetails';
-import CustomerList from '@/components/Cart/Customer/CustomerList';
-import MyCart from '@/pages/my-cart';
-import { Box, Stack } from '@mui/material';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useCustomers } from "@/Context/CustomersProvider/CustomersProvider";
+import { useSeletedProduct } from "@/Context/ProductInfoProvider/ProductInfoProvider";
+import CustomerDetails from "@/components/Cart/Customer/CustomerDetails";
+import CustomerList from "@/components/Cart/Customer/CustomerList";
+import MyCart from "@/pages/my-cart";
+import { Box, Stack } from "@mui/material";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 const CUSTOMER_ID = 23;
 
@@ -25,7 +25,7 @@ export default function CustomerCart() {
 
   useEffect(() => {
     const userData =
-      typeof window !== 'undefined' ? JSON.parse(window.sessionStorage.getItem('user')) : null;
+      typeof window !== "undefined" ? JSON.parse(window.sessionStorage.getItem("user")) : null;
     setUserData(userData);
   }, []);
 
@@ -50,7 +50,7 @@ export default function CustomerCart() {
 
   const handleLineItem = (key) => {
     dispatch({
-      type: 'ADD_LINE_ITEM',
+      type: "ADD_LINE_ITEM",
       payload: {
         customerId: CUSTOMER_ID,
         price: itemPrice,
@@ -62,7 +62,7 @@ export default function CustomerCart() {
 
   const handleDiscountBtn = () => {
     dispatch({
-      type: 'ADD_DISCOUNT_LINE_ITEM',
+      type: "ADD_DISCOUNT_LINE_ITEM",
       payload: {
         id: Date.now(),
         customerId: CUSTOMER_ID,
@@ -77,7 +77,7 @@ export default function CustomerCart() {
         direction="row"
         gap={2}
         display="flex"
-        flexWrap={{ lg: 'nowrap', xs: 'wrap' }}
+        flexWrap={{ lg: "nowrap", xs: "wrap" }}
         justifyContent="center"
       >
         <CustomerList />
