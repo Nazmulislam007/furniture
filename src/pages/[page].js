@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const router = useRouter();
   const pathname = router.query.page;
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
 
   async function getProducts() {
@@ -31,17 +31,23 @@ export default function Home() {
     getProducts();
   }, [pathname]);
 
-  if (loading) return <div>loading...</div>;
+  let content = null;
 
-  if (!loading && products?.length === 0) return <div>Something went wrong! please try again.</div>;
+  if (loading) content = <div>loading...</div>;
+
+  if (!loading && products?.length === 0)
+    content = <div>Something went wrong! please try again.</div>;
 
   if (products?.length > 0 && !loading) {
-    const content = products.filter((product) => product.url === pathname);
+    const prods = products.filter((product) => product.url === pathname);
 
-    return pathname === "cabinets" ? (
-      <CabinetContent products={products} pathname={pathname} />
-    ) : (
-      <PageContent products={content} pathname={pathname} />
-    );
+    content =
+      pathname === "cabinets" ? (
+        <CabinetContent products={products} pathname={pathname} />
+      ) : (
+        <PageContent products={prods} pathname={pathname} />
+      );
   }
+
+  return content;
 }
