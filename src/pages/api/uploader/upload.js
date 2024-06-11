@@ -1,13 +1,5 @@
 import upload from "@/lib/uploader";
 
-export const config = {
-  api: {
-    bodyParser: false
-  }
-};
-
-const uploadMiddleware = upload.single("file");
-
 const runMiddleware = (req, res, fn) =>
   new Promise((resolve, reject) => {
     fn(req, res, (result) => {
@@ -20,6 +12,7 @@ const runMiddleware = (req, res, fn) =>
 
 export default async function handler(req, res) {
   try {
+    const uploadMiddleware = upload.single("file");
     await runMiddleware(req, res, uploadMiddleware);
 
     res.status(200).json({ data: "File uploaded successfully" });
@@ -27,3 +20,10 @@ export default async function handler(req, res) {
     res.status(500).json({ error: `Upload failed: ${error.message}` });
   }
 }
+
+
+export const config = {
+  api: {
+    bodyParser: false
+  }
+};
