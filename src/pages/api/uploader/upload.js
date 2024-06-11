@@ -1,17 +1,10 @@
-import uploader from "@/lib/uploader";
+import upload from "@/lib/uploader";
 
 export const config = {
   api: {
     bodyParser: false
   }
 };
-
-const storage = uploader.diskStorage({
-  destination: "./public/company-logo",
-  filename: (req, file, cb) => cb(null, file.originalname)
-});
-
-const upload = uploader({ storage });
 
 const uploadMiddleware = upload.single("file");
 
