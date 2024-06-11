@@ -14,6 +14,15 @@ const nextConfig = {
             },
         ],
     },
+    webpack: (config, { isServer }) => {
+        if (!isServer) {
+            config.resolve.fallback = {
+                multer: false
+            }
+        }
+
+        return config;
+    }
 };
 
 module.exports = nextConfig;
