@@ -1,4 +1,4 @@
-import multer from "multer";
+import uploadPackage from "@/lib/multer";
 
 export const config = {
   api: {
@@ -6,12 +6,12 @@ export const config = {
   }
 };
 
-const storage = multer.diskStorage({
+const storage = uploadPackage.diskStorage({
   destination: "./public/company-logo",
   filename: (req, file, cb) => cb(null, file.originalname)
 });
 
-const upload = multer({ storage });
+const upload = uploadPackage({ storage });
 
 const uploadMiddleware = upload.single("file");
 
