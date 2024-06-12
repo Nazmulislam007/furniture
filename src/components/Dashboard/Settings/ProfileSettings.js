@@ -55,7 +55,7 @@ export default function ProfileSettings() {
   const handleUpload = async () => {
     setLoading(true);
     if (!image) return;
-    const apiUrlEndpoint = `${apiUrl}/api/upload`;
+    const apiUrlEndpoint = `${apiUrl}/api/uploader/upload`;
 
     let resizedFile = image;
 

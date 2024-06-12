@@ -19,7 +19,7 @@ export async function uploadMiddleware(req, res) {
   try {
     const upload = multer({ storage });
     const uploadMiddleware = upload.single("file");
-    await runMiddleware(req, res, uploadMiddleware);
+    return await runMiddleware(req, res, uploadMiddleware);
   } catch (error) {
     console.log(error);
   }
