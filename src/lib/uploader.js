@@ -1,4 +1,4 @@
-import multer from "multer";
+import multer from "multer/index";
 
 const storage = multer.diskStorage({
   destination: "./public/company-logo",
