@@ -55,7 +55,7 @@ export default function ProfileSettings() {
   const handleUpload = async () => {
     setLoading(true);
     if (!image) return;
-    const apiUrlEndpoint = `${apiUrl}/api/uploader/upload`;
+    const apiUrlEndpoint = `${apiUrl}/api/upload`;
 
     let resizedFile = image;
 
@@ -65,7 +65,6 @@ export default function ProfileSettings() {
 
     const formData = new FormData();
     formData.append("file", resizedFile);
-    formData.append("id", loggedInUser);
 
     const res = await fetch(apiUrlEndpoint, {
       method: "POST",
