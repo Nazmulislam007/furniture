@@ -6,11 +6,13 @@ import { useEffect, useState } from "react";
 export default function ProfileSettings() {
   const [image, setImage] = useState();
   const [logo, setLogo] = useState("");
+  const [img, setImg] = useState("");
   const [loading, setLoading] = useState(true);
 
   const handleChange = (e) => {
     const file = e.target.files[0];
     setImage(file);
+    setLogo(file.name);
   };
 
   useEffect(() => {
@@ -18,7 +20,15 @@ export default function ProfileSettings() {
       const apiUrlEndpoint = `${apiUrl}/api/uploader/getLogoName?id=${loggedInUser.id}`;
       const res = await fetch(apiUrlEndpoint);
       const data = await res.json();
-      setLogo(data.logo);
+
+      if (data.logo) {
+        setLogo(data.logo);
+        import(`@/assets/company-logo/${data.logo}`)
+          .then((image) => {
+            setImg(image.default);
+          })
+          .catch((err) => console.error("Error loading image:", err));
+      }
     }
     getLogo();
   }, [loading]);
@@ -84,11 +94,6 @@ export default function ProfileSettings() {
     setLoading(false);
   };
 
-  let name;
-
-  if (image?.name) name = image?.name;
-  if (logo) name = logo;
-
   return (
     <Box
       component="div"
@@ -131,7 +136,7 @@ export default function ProfileSettings() {
                 minWidth: "250px"
               }}
             >
-              <Typography component="p">{name || "Upload logo"}</Typography>
+              <Typography component="p">{logo || "Upload logo"}</Typography>
               <input
                 type="file"
                 accept="image/*"
@@ -153,10 +158,10 @@ export default function ProfileSettings() {
             </Button>
           </Box>
 
-          {logo && (
+          {logo && img && (
             <Box sx={{ width: "100px", height: "65px", mt: 2 }}>
               <img
-                src={`/company-logo/${logo}`}
+                src={img.src}
                 alt={logo}
                 style={{ display: "block", height: "100%", width: "100%" }}
               />
