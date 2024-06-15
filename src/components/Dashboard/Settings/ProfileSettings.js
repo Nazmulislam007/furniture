@@ -23,7 +23,7 @@ export default function ProfileSettings() {
 
       if (data.logo) {
         setLogo(data.logo);
-        import(`../../../assets/company-logo/${data.logo}`)
+        import(`../../assets/company-logo/${data.logo}`)
           .then((image) => {
             setImg(image.default);
           })
