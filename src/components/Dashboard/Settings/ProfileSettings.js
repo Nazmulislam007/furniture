@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 export default function ProfileSettings() {
   const [image, setImage] = useState();
   const [logo, setLogo] = useState("");
-  const [img, setImg] = useState("");
   const [loading, setLoading] = useState(true);
 
   const handleChange = (e) => {
@@ -23,11 +22,6 @@ export default function ProfileSettings() {
 
       if (data.logo) {
         setLogo(data.logo);
-        import(`../../../assets/company-logo/${data.logo}`)
-          .then((image) => {
-            setImg(image.default);
-          })
-          .catch((err) => console.error("Error loading image:", err));
       }
     }
     getLogo();
@@ -161,7 +155,7 @@ export default function ProfileSettings() {
           {logo && (
             <Box sx={{ width: "100px", height: "65px", mt: 2 }}>
               <img
-                src={img.src}
+                src={`${window.location.origin}/company-logo/${logo}`}
                 alt={logo}
                 style={{ display: "block", height: "100%", width: "100%" }}
               />

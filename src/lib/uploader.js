@@ -1,7 +1,7 @@
 import multer from "multer";
 
 const storage = multer.diskStorage({
-  destination: "./src/assets/company-logo",
+  destination: "./public/company-logo",
   filename: (req, file, cb) => cb(null, file.originalname)
 });
 
