@@ -158,7 +158,7 @@ export default function ProfileSettings() {
             </Button>
           </Box>
 
-          {logo && img && (
+          {logo && (
             <Box sx={{ width: "100px", height: "65px", mt: 2 }}>
               <img
                 src={img.src}
