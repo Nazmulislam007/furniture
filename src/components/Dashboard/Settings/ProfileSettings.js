@@ -8,6 +8,8 @@ export default function ProfileSettings() {
   const [logo, setLogo] = useState("");
   const [loading, setLoading] = useState(true);
 
+  const [img, setImg] = useState("");
+
   const handleChange = (e) => {
     const file = e.target.files[0];
     setImage(file);
@@ -22,6 +24,9 @@ export default function ProfileSettings() {
 
       if (data.logo) {
         setLogo(data.logo);
+        import(`../../../assets/company-logo/${data.logo}`).then((image) => {
+          setImg(image.default);
+        });
       }
     }
     getLogo();
@@ -155,7 +160,7 @@ export default function ProfileSettings() {
           {logo && (
             <Box sx={{ width: "100px", height: "65px", mt: 2 }}>
               <img
-                src={`${window.location.origin}/company-logo/${logo}`}
+                src={img.src}
                 alt={logo}
                 style={{ display: "block", height: "100%", width: "100%" }}
               />
