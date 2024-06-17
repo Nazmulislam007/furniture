@@ -7,8 +7,7 @@ export default function ProfileSettings() {
   const [image, setImage] = useState();
   const [logo, setLogo] = useState("");
   const [loading, setLoading] = useState(true);
-
-  const [img, setImg] = useState("");
+  const [url, setUrl] = useState("");
 
   const handleChange = (e) => {
     const file = e.target.files[0];
@@ -24,9 +23,14 @@ export default function ProfileSettings() {
 
       if (data.logo) {
         setLogo(data.logo);
-        import(`../../../assets/company-logo/${data.logo}`).then((image) => {
-          setImg(image.default);
-        });
+
+        const apiUrlEndpoint = `${apiUrl}/api/uploader/sendImage?filename=${data.logo}`;
+        const res = await fetch(apiUrlEndpoint);
+        if (res.ok) {
+          const blob = await res.blob();
+          const imageUrl = URL.createObjectURL(blob);
+          setUrl(imageUrl);
+        }
       }
     }
     getLogo();
@@ -160,7 +164,7 @@ export default function ProfileSettings() {
           {logo && (
             <Box sx={{ width: "100px", height: "65px", mt: 2 }}>
               <img
-                src={img.src}
+                src={url}
                 alt={logo}
                 style={{ display: "block", height: "100%", width: "100%" }}
               />
