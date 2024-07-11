@@ -3,7 +3,7 @@ import path from "path";
 
 export async function sendFile(res, filename) {
   try {
-    const filePath = path.join(process.cwd(), "/src/assets/company-logo", filename);
+    const filePath = path.join(process.cwd(), "/public/company-logo", filename);
     const fileContents = await fs.readFile(filePath);
     const fileExt = path.extname(filename).substring(1);
     res.setHeader("Content-Type", `image/${fileExt}`);
